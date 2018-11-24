@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8"/>
+<title>Insert title here</title>
+</head>
+<body>
+
+<table>
+<tr><th>Num</th><th>Nom</th><th>Prénom</th><th>Date Naissance</th></tr>
+<tr th:each="a:${auteurs}">
+<td th:text="${a.num}"/>
+<td th:text="${a.nom}"/>
+<td th:text="${a.prenom}"/>
+<td th:text="${a.dateNais}"/>
+</tr>
+</table>
+</body>
+</html>
