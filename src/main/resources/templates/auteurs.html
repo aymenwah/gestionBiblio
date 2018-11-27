@@ -13,6 +13,12 @@
 <td th:text="${a.nom}"/>
 <td th:text="${a.prenom}"/>
 <td th:text="${a.dateNais}"/>
+<td>
+<a th:href="@{/auteur/supAuteur(num=${a.num})}" th:text="Supprimer"/>
+</td>
+<td>
+<a th:href="@{/auteur/modifAuteur(num=${a.num})}" th:text="Modifier"/>
+</td>
 </tr>
 </table>
 </body>
