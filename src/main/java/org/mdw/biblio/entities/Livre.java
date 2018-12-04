@@ -6,11 +6,18 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+
+
 @Entity
 public class Livre implements Serializable{
 	@Id
+	@NotNull
 	private String codeLivre;
+	@NotNull
 	private String titre;
+	@Min(10)
 	private int nbPages;
 	@ManyToOne
 	@JoinColumn(name="numAut")

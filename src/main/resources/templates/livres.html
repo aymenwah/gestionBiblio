@@ -15,12 +15,17 @@
 <td th:text="${a.auteur.num}"/>
 <td th:text="${a.editeur.codeEditeur}"/>
 <td>
-<a th:href="@{/livre/supLivre(num=${a.codeLivre})}" th:text="Supprimer"/>
+<a th:href="@{/livre/supLivre(codeLivre=${a.codeLivre})}" th:text="Supprimer"/>
 </td>
 <td>
-<a th:href="@{/livre/modifLivre(num=${a.codeLivre})}" th:text="Modifier"/>
+<a th:href="@{/livre/modifLivre(codeLivre=${a.codeLivre})}" th:text="Modifier"/>
 </td>
 </tr>
 </table>
+<ul>
+<li th:each="pa:${#numbers.sequence(0, nbpages - 1)}">
+<a  th:href="@{/livre/lister(p=${pa})}" th:text=${pa}></a>
+</li>
+</ul>
 </body>
 </html>

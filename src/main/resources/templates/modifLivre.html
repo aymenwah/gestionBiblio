@@ -6,7 +6,7 @@
 </head>
 <body>
 
-<form th:action="@{/livre/save}" th:object="${livre}" method="post">
+<form th:action="@{/livre/update}" th:object="${livre}" method="post">
 <p>codeLivre<input type="text" th:field="*{codeLivre}"/><span th:errors="*{codeLivre}"/></p>
 <p>titre<input type="text" th:field="*{titre}"/><span th:errors="*{titre}"/></p>
 <p>nbPages<input type="text" th:field="*{nbPages}"/><span th:errors="*{nbPages}"/></p>

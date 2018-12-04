@@ -8,6 +8,8 @@ import org.mdw.biblio.dao.LivresRepository;
 import org.mdw.biblio.entities.Auteur;
 import org.mdw.biblio.entities.Livre;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -34,25 +36,58 @@ public class WebControlleur {
 	public String saveLivre(@Valid @ModelAttribute Livre l,
 			BindingResult bindingResult) {
 		if (bindingResult.hasErrors()){
-			return "addLivre";
+		return "redirect:/livre/add";
+			//return "addLivre";
 		}
+		//System.out.println(l.getAuteur().getNom());
 		l.setAuteur(auteurRepository.findById(l.getAuteur().getNum()).get());
 		l.setEditeur(editeurRepository.findById(l.getEditeur().getCodeEditeur()).get());
 		livresRepository.save(l);
 		
 		return "redirect:/livre/lister";
 	}
-	@RequestMapping("livre/lister")
-	public String livrelister(Model model) {
-		model.addAttribute("livres",
-				livresRepository.findAll() );
+	@RequestMapping(value="livre/listerbytitre",method=RequestMethod.POST)
+	public String livrelisterTitre(@ModelAttribute String titre,Model model) {
+		model.
+		addAttribute("livres",livresRepository.chercherParTitre("%"+titre+"%"));
+		
 		return "livres";
+	}
+	@RequestMapping("livre/lister")
+	public String livrelister(Model model,int p) {
+		Page<Livre> livres=livresRepository.
+				findAll(new PageRequest(p,3));
+		
+		model.addAttribute("livres",
+				livres );
+		model.addAttribute("nbpages", livres.getTotalPages());
+		return "livres";
+	}
+	@RequestMapping("livre/modifLivre")
+	public String modifLivre(Model model,String codeLivre) {
+		Livre l=livresRepository.findById(codeLivre).get();
+		model.addAttribute("auteurs",auteurRepository.findAll() );
+		model.addAttribute("editeurs",editeurRepository.findAll() );
+		model.addAttribute("livre",l);
+		return "modifLivre";
 	}
 	@RequestMapping("auteur/modifAuteur")
 	public String modifAuteur(Model model,Long num) {
 		Auteur a=auteurRepository.findById(num).get();
 		model.addAttribute("auteur",a);
 		return "modifAuteur";
+	}
+	@RequestMapping(value="livre/update",method=RequestMethod.POST)
+	public String updateAuteur(@Valid @ModelAttribute Livre l,
+			BindingResult bindingResult) {
+		if (bindingResult.hasErrors()){
+			return "redirect:/livre/modifLivre";
+		}
+		l.setAuteur(auteurRepository.findById(l.getAuteur().getNum()).get());
+		l.setEditeur(editeurRepository.findById(l.getEditeur().getCodeEditeur()).get());
+		livresRepository.save(l);
+		
+		return "redirect:/livre/lister";
 	}
 	@RequestMapping(value="auteur/update",method=RequestMethod.POST)
 	public String updateAuteur(@Valid @ModelAttribute Auteur a,
@@ -63,6 +98,11 @@ public class WebControlleur {
 		auteurRepository.save(a);
 		
 		return "redirect:/auteur/lister";
+	}
+	@RequestMapping("/livre/supLivre")
+	public String suppAuteur(Model model,String codeLivre) {
+		livresRepository.deleteById(codeLivre);
+		return "redirect:/livre/lister";
 	}
 	@RequestMapping("auteur/supAuteur")
 	public String suppAuteur(Model model,Long num) {

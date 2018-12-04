@@ -10,6 +10,8 @@ import org.springframework.data.repository.query.Param;
 public interface LivresRepository extends JpaRepository<Livre, String>{
 	@Query("SELECT L FROM Livre L where L.nbPages>:x")
 	public List<Livre> chercherSupPage(@Param("x")int nb);
-	
-
+	@Query("SELECT L FROM Livre L where L.titre like :x")
+	public List<Livre> chercherParTitre(@Param("x") String t);
+	@Query("SELECT L FROM Livre L where L.auteur.nom like :x")
+	public List<Livre> chercherParTNomAuteur(@Param("x") String t);
 }
