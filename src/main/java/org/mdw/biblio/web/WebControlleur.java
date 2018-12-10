@@ -16,6 +16,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class WebControlleur {
@@ -46,21 +47,26 @@ public class WebControlleur {
 		
 		return "redirect:/livre/lister";
 	}
-	@RequestMapping(value="livre/listerbytitre",method=RequestMethod.POST)
-	public String livrelisterTitre(@ModelAttribute String titre,Model model) {
-		model.
-		addAttribute("livres",livresRepository.chercherParTitre("%"+titre+"%"));
-		
-		return "livres";
+	
+	@RequestMapping("auteur/lister")
+	public String listAuteurs(Model model) {
+		model.addAttribute("auteurs",
+				auteurRepository.findAll() );
+		return "auteurs";
 	}
-	@RequestMapping("livre/lister")
-	public String livrelister(Model model,int p) {
+	@RequestMapping("/livre/lister")
+	public String livrelister(Model model,
+			@RequestParam(name="p",defaultValue="0")int p
+			,@RequestParam(name="s",defaultValue="3")int s
+			,@RequestParam(name="t",defaultValue="")String t) {
 		Page<Livre> livres=livresRepository.
-				findAll(new PageRequest(p,3));
+				chercherParTitre("%"+t+"%", new PageRequest(p, s));
 		
 		model.addAttribute("livres",
 				livres );
+		model.addAttribute("pageCourante", p);
 		model.addAttribute("nbpages", livres.getTotalPages());
+		model.addAttribute("t", t);
 		return "livres";
 	}
 	@RequestMapping("livre/modifLivre")
@@ -109,12 +115,7 @@ public class WebControlleur {
 		auteurRepository.deleteById(num);
 		return "redirect:/auteur/lister";
 	}
-	@RequestMapping("auteur/lister")
-	public String listAuteurs(Model model) {
-		model.addAttribute("auteurs",
-				auteurRepository.findAll() );
-		return "auteurs";
-	}
+	
 	@RequestMapping("auteur/add")
 	public String addAuteur(Model model) {
 		model.addAttribute("auteur",new Auteur() );
